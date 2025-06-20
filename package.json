@@ -1,0 +1,26 @@
+{
+  "name": "jmm-budget-tracker",
+  "version": "1.0.0",
+  "description": "A comprehensive budget tracking web application built with HTML, CSS, and JavaScript.",
+  "homepage": "https://github.com/Julliard-kun/jmm-budget-tracker#readme",
+  "bugs": {
+    "url": "https://github.com/Julliard-kun/jmm-budget-tracker/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Julliard-kun/jmm-budget-tracker.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
