@@ -20,7 +20,8 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/server/app.js",
-    "dev": "nodemon --exec ts-node src/server/app.ts",
+    "dev": "nodemon",
+    "dev:ts": "nodemon --exec ts-node src/server/app.ts",
     "dev:watch": "nodemon --watch src --ext ts,js --exec ts-node src/server/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -28,6 +29,7 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "express-session": "^1.18.1",
+    "mysql2": "^3.14.1",
     "path": "^0.12.7"
   },
   "devDependencies": {

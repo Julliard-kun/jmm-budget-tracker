@@ -2,12 +2,26 @@ import dotenv from 'dotenv';
 import express, { Express, Request, Response, NextFunction } from 'express';
 import session from 'express-session';
 import path from 'path';
+import pool from './database';
 
 dotenv.config();
 
 const app: Express = express();
 const PORT: number = parseInt(process.env.PORT || '3000', 10);
 const HOSTNAME: string = process.env.HOSTNAME || 'localhost';
+
+// Test database connection
+async function testDatabaseConnection() {
+    try {
+        const connection = await pool.getConnection();
+        connection.release();
+    } catch (error) {
+        console.error('Database connection failed:', error);
+    }
+}
+
+// Initialize database connection
+testDatabaseConnection();
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
