@@ -3,25 +3,13 @@ import express, { Express, Request, Response, NextFunction } from 'express';
 import session from 'express-session';
 import path from 'path';
 import pool from './database';
+import loginRouter from '../assets/ts/login';
 
 dotenv.config();
 
 const app: Express = express();
-const PORT: number = parseInt(process.env.PORT || '3000', 10);
+const PORT: number = parseInt(process.env.PORT || '3636', 10);
 const HOSTNAME: string = process.env.HOSTNAME || 'localhost';
-
-// Test database connection
-async function testDatabaseConnection() {
-    try {
-        const connection = await pool.getConnection();
-        connection.release();
-    } catch (error) {
-        console.error('Database connection failed:', error);
-    }
-}
-
-// Initialize database connection
-testDatabaseConnection();
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
@@ -37,6 +25,9 @@ app.use(session({
         maxAge: 2 * 60 * 60 * 1000 // 2 hours
     }
 }));
+
+// Attach routers
+app.use('/', loginRouter);
 
 // Serve static files from src/assets
 app.use('/assets', express.static(path.join(__dirname, '..', 'assets')));
