@@ -36,7 +36,7 @@ router.post('/authentication', async (req: Request, res: Response) => {
 
             } else {
                 if (credentialsQueryResults[0].username === getUsernameInput && credentialsQueryResults[0].password === getPasswordInput) {
-                    // TO BE FIXED:req.session.username = credentialsQueryResults[0].username;
+                    req.session.username = credentialsQueryResults[0].username;
                     res.json({ success: true, message: "Login succesful."})
                     
                     let updateUserStatus = `UPDATE user SET user_status = 'online' WHERE username = ?`;

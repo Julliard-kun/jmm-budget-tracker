@@ -21,7 +21,12 @@
     "noImplicitOverride": true,
     "allowSyntheticDefaultImports": true
   },
+  "typeRoots": [
+      "./src/types",
+      "./node_modules/@types"
+  ],
   "include": ["src"],
+  "files": ["src/types/index.ts"],
   "exclude": [
     "node_modules",
     "dist",
