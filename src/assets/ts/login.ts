@@ -35,7 +35,7 @@ router.post('/authentication', async (req: Request, res: Response) => {
                 res.json({ message: "User not found."});
 
             } else {
-                if (credentialsQueryResults[0].username === getUsernameInput && credentialsQueryResults[0].password ) {
+                if (credentialsQueryResults[0].username === getUsernameInput && credentialsQueryResults[0].password === getPasswordInput) {
                     // TO BE FIXED:req.session.username = credentialsQueryResults[0].username;
                     res.json({ success: true, message: "Login succesful."})
                     

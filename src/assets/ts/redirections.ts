@@ -23,5 +23,18 @@ router.get("/homepage", (req: Request, res: Response) => {
 
 });
 
+router.get("/logout", async (req: Request, res: Response) => {
+    let updateUserStatus = `UPDATE user SET user_status = 'offline'`
+    try {
+        const [updateUserStatusResult] = await pool.query(updateUserStatus);
+        console.log("User status updated.");
+        res.sendFile(path.join(__dirname, "..", "..", "views", "index.html"));
+
+
+    } catch {
+        console.log("Error updating user status.");
+    }
+
+});
 
 export default router;
