@@ -4,6 +4,7 @@ import session from 'express-session';
 import path from 'path';
 import pool from './database';
 import loginRouter from '../assets/ts/login';
+import redirectionsRouter from '../assets/ts/redirections';
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ app.use(session({
 
 // Attach routers
 app.use('/', loginRouter);
+app.use('/', redirectionsRouter);
 
 // Serve static files from src/assets
 app.use('/assets', express.static(path.join(__dirname, '..', 'assets')));
@@ -48,8 +50,8 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     res.status(500).sendFile(path.join(__dirname, '..', 'views', '500.html'));
 });
 
-app.listen(PORT, HOSTNAME, () => {
-    console.log(`Server is running on http://${HOSTNAME}:${PORT}`);
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
 
 export default app; 

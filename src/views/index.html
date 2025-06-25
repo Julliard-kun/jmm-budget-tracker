@@ -26,14 +26,14 @@
                                     <h3 class="text-center font-weight-light my-4">Login</h3>
                                 </div>
                                 <div class="card-body">
-                                    <form class="user" id="loginForm" method="post" action="authentication">
+                                    <form class="user" id="loginForm" method="post" action="/authentication">
                                         <div class="form-floating mb-3">
-                                            <input class="form-control" id="inputUsername" type="text"
+                                            <input class="form-control" name="usernameInput" id="inputUsername" type="text"
                                                 placeholder="Enter Username" required/>
                                             <label for="inputUsername">Username</label>
                                         </div>
                                         <div class="form-floating mb-3">
-                                            <input class="form-control" id="inputPassword" type="password"
+                                            <input class="form-control" name="passwordInput" id="inputPassword" type="password"
                                                 placeholder="Password" required/>
                                             <label for="inputPassword">Password</label>
                                         </div>
@@ -45,7 +45,8 @@
                                         </div>
                                         <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
                                             <a class="small" href="password.html">Forgot Password?</a>
-                                            <a class="btn btn-primary">Login</a>
+                                            <div id="error-message" style="color: red;"></div>
+                                            <button type="submit" class="btn btn-primary" id="loginButton">Login</button>
                                         </div>
                                     </form>
                                 </div>
@@ -78,5 +79,36 @@
         crossorigin="anonymous"></script>
     <script src="/assets/js/scripts.js"></script>
 </body>
+
+<script>
+    document.getElementById("loginForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        fetch("/authentication", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(
+                { usernameInput: document.getElementById("inputUsername").value,
+                    passwordInput: document.getElementById("inputPassword").value }
+            )
+
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === "User not found.") {
+                    document.getElementById("error-message").innerText = data.message;
+
+                } else if (data.message === "Invalid credentials.") {
+                    document.getElementById("error-message").innerText = data.message;
+
+                } else if (data.message === "Login succesful.") {
+                    window.location.href = "/homepage";
+                }
+            });
+    });
+
+</script>
 
 </html>
