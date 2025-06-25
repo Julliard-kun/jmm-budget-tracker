@@ -14,13 +14,14 @@ console.log("Redirections router loaded.");
 // }
 
 router.get("/index", (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, "..", "views", "index.html"));
+    res.sendFile(path.join(__dirname, "..", "..", "views", "index.html"));
 
 });
 
 router.get("/homepage", (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, "..", "views", "homepage.html"));
+    res.sendFile(path.join(__dirname, "..", "..", "views", "homepage.html"));
 
 });
+
 
 export default router;

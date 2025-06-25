@@ -24,7 +24,7 @@ router.post('/authentication', async (req: Request, res: Response) => {
             res.json({ message: "User not found." });
 
         } else if (userStatusResults[0].user_status === "online") {
-            res.json({ message: "User already online" });
+            res.json({ message: "User already online." });
 
         } else {
             let credentialsQuery = `SELECT username, password FROM user WHERE username = ?`;
