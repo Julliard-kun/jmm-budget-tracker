@@ -18,7 +18,7 @@
 <body class="sb-nav-fixed">
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
         <!-- Navbar Brand-->
-        <a class="navbar-brand ps-3" href="index.html">Start Bootstrap</a>
+        <a class="navbar-brand ps-3" href="index.html">JMM Budget Tracker</a>
         <!-- Sidebar Toggle-->
         <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i
                 class="fas fa-bars"></i></button>
@@ -115,15 +115,15 @@
                             <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                             Charts
                         </a>
-                        <a class="nav-link" href="tables.html">
+                        <a class="nav-link" href="/tables">
                             <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                             Tables
                         </a>
                     </div>
                 </div>
                 <div class="sb-sidenav-footer">
-                    <div class="small">Logged in as:</div>
-                    Start Bootstrap
+                    <div class="small">Logged in as: <span id="name"></span></div>
+                    <div class="small">JMM Budget Tracker</div>
                 </div>
             </nav>
         </div>
@@ -137,48 +137,37 @@
                     </ol>
                     <div class="card mb-4">
                         <div class="card-body">
-                            DataTables is a third party plugin that is used to generate the demo table below. For more
-                            information about DataTables, please visit the
-                            <a target="_blank" href="https://datatables.net/">official DataTables documentation</a>
-                            .
+                            View and manage your purchase history. Use the search box to find specific items,
+                            click on column headers to sort, and use the pagination controls to navigate through the data.
                         </div>
                     </div>
                     <div class="card mb-4">
                         <div class="card-header">
                             <i class="fas fa-table me-1"></i>
-                            DataTable Example
+                            Purchase History
                         </div>
                         <div class="card-body">
                             <table id="datatablesSimple">
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Position</th>
-                                        <th>Office</th>
-                                        <th>Age</th>
-                                        <th>Start date</th>
-                                        <th>Salary</th>
+                                        <th>Item Name</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Total Cost</th>
+                                        <th>Date Purchased</th>
                                     </tr>
                                 </thead>
                                 <tfoot>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Position</th>
-                                        <th>Office</th>
-                                        <th>Age</th>
-                                        <th>Start date</th>
-                                        <th>Salary</th>
+                                        <th>Item Name</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Total Cost</th>
+                                        <th>Date Purchased</th>
                                     </tr>
                                 </tfoot>
-                                <tbody>
-                                    <tr>
-                                        <td>Tiger Nixon</td>
-                                        <td>System Architect</td>
-                                        <td>Edinburgh</td>
-                                        <td>61</td>
-                                        <td>2011/04/25</td>
-                                        <td>$320,800</td>
-                                    </tr>
+                                <tbody id="purchaseTableBody">
+                                    <!-- Data will be loaded dynamically -->
                                 </tbody>
                             </table>
                         </div>
@@ -206,5 +195,88 @@
         crossorigin="anonymous"></script>
     <script src/assets/js/datatables-simple-demo.js"></script>
 </body>
+
+<script>
+    // Fetch user session data from the server
+    async function loadUserData() {
+        try {
+            const response = await fetch('/api/user-session');
+            if (response.ok) {
+                const userData = await response.json();
+                document.getElementById("name").innerText = `${userData.first_name} ${userData.last_name}`;
+            } else {
+                console.error('Failed to fetch user data');
+                document.getElementById("name").innerText = "User";
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+            document.getElementById("name").innerText = "User";
+        }
+    }
+
+    // Format currency
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'PHP'
+        }).format(amount);
+    }
+
+    // Format date
+    function formatDate(dateString) {
+        if (!dateString) return 'N/A';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
+
+    // Load purchase data
+    async function loadPurchaseData() {
+        try {
+            const response = await fetch('/api/purchases');
+            if (response.ok) {
+                const { data } = await response.json();
+                const tableBody = document.getElementById('purchaseTableBody');
+                
+                // Clear existing data
+                tableBody.innerHTML = '';
+                
+                // Add new data
+                data.forEach(purchase => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${purchase.item_name}</td>
+                        <td>${purchase.item_quantity}</td>
+                        <td>${formatCurrency(purchase.item_price)}</td>
+                        <td>${formatCurrency(purchase.total_cost)}</td>
+                        <td>${formatDate(purchase.date_purchased)}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                // Initialize DataTable
+                const dataTable = new simpleDatatables.DataTable("#datatablesSimple", {
+                    searchable: true,
+                    sortable: true,
+                    paging: true,
+                    perPage: 10
+                });
+            } else {
+                console.error('Failed to fetch purchase data');
+            }
+        } catch (error) {
+            console.error('Error fetching purchase data:', error);
+        }
+    }
+
+    // Load both user data and purchase data when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        loadUserData();
+        loadPurchaseData();
+    });
+</script>
 
 </html>

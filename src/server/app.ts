@@ -6,6 +6,7 @@ import path from 'path';
 import pool from './database';
 import loginRouter from '../assets/ts/login';
 import redirectionsRouter from '../assets/ts/redirections';
+import tablesRouter from '../assets/ts/tables';
 
 dotenv.config();
 
@@ -37,6 +38,7 @@ app.use(session({
 // Attach routers
 app.use('/', loginRouter);
 app.use('/', redirectionsRouter);
+app.use('/', tablesRouter);
 
 // Serve static files from src/assets
 app.use('/assets', express.static(path.join(__dirname, '..', 'assets')));
