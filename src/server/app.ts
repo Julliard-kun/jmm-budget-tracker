@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import express, { Express, Request, Response, NextFunction } from 'express';
 import session from 'express-session';
+import rateLimit from 'express-rate-limit';
 import path from 'path';
 import pool from './database';
 import loginRouter from '../assets/ts/login';
@@ -11,10 +12,16 @@ dotenv.config();
 const app: Express = express();
 const PORT: number = parseInt(process.env.PORT || '3636', 10);
 const HOSTNAME: string = process.env.HOSTNAME || 'localhost';
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    message: "Too many requests, please try again later."
+});
 
 // Middleware
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: '10mb' }));
+app.use(limiter);
 
 // Session configuration
 app.use(session({

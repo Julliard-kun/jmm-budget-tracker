@@ -27,7 +27,7 @@ router.post('/authentication', async (req: Request, res: Response) => {
             res.json({ message: "User already online." });
 
         } else {
-            let credentialsQuery = `SELECT username, password FROM user WHERE username = ?`;
+            let credentialsQuery = `SELECT username, password, first_name, last_name FROM user WHERE username = ?`;
 
             const [credentialsQueryResults] = await pool.query(credentialsQuery, [getUsernameInput]) as [any[], any];
 
@@ -37,23 +37,23 @@ router.post('/authentication', async (req: Request, res: Response) => {
             } else {
                 if (credentialsQueryResults[0].username === getUsernameInput && credentialsQueryResults[0].password === getPasswordInput) {
                     req.session.username = credentialsQueryResults[0].username;
-                    res.json({ success: true, message: "Login succesful."})
-                    
+                    req.session.first_name = credentialsQueryResults[0].first_name;
+                    req.session.last_name = credentialsQueryResults[0].last_name;
+
                     let updateUserStatus = `UPDATE user SET user_status = 'online' WHERE username = ?`;
 
                     try {
                         await pool.query(updateUserStatus, [getUsernameInput]);
                         console.log("User status updated to online");
-
-                        // Add redirections.ts
                     } catch (error) {
                         console.error("Error updating user status: ", error);
                     }
+
+                    res.json({ success: true, message: "Login successful." });
                     
                 } else {
                     res.json({ message: "Invalid credentials."});
                 }
-
             }
         }
 
@@ -62,5 +62,6 @@ router.post('/authentication', async (req: Request, res: Response) => {
         res.status(500).json({ error: "Database error" });
     }
 });
+
 
 export default router;
