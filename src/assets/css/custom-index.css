@@ -1,0 +1,87 @@
+body.bg-primary {
+    background: url(../img/index-bg.png) no-repeat center center/cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Container */
+#layoutAuthentication {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#layoutAuthentication_content {
+    flex: 1 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+.container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+/* Card Styling */
+.card {
+    background: rgba(33, 37, 41, 0.85); /* Dark background with transparency */
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    padding: 20px 30px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Text color adjustments for dark theme */
+.card-header h3 {
+    color: #ffffff;
+}
+
+.form-floating > label {
+    color: #adb5bd;
+}
+
+.form-control {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.form-control:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+}
+
+.form-check-label {
+    color: #adb5bd;
+}
+
+.small {
+    color: #adb5bd;
+    text-decoration: none;
+}
+
+.small:hover {
+    color: #ffffff;
+}
+
+/* Custom placeholder color */
+.form-control::placeholder {
+    color: #6c757d;
+}
+
+/* Adjust col-lg-5 width for better card sizing */
+.col-lg-5 {
+    flex: 0 0 auto;
+    width: 450px;
+    max-width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+}

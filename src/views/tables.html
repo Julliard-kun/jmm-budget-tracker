@@ -149,21 +149,13 @@
                         <div class="card-body">
                             <table id="datatablesSimple">
                                 <thead>
-                                    <tr>
-                                        <th>Item Name</th>
-                                        <th>Quantity</th>
-                                        <th>Price</th>
-                                        <th>Total Cost</th>
-                                        <th>Date Purchased</th>
+                                    <tr id="headerRow">
+                                        <!-- Headers will be loaded dynamically -->
                                     </tr>
                                 </thead>
                                 <tfoot>
-                                    <tr>
-                                        <th>Item Name</th>
-                                        <th>Quantity</th>
-                                        <th>Price</th>
-                                        <th>Total Cost</th>
-                                        <th>Date Purchased</th>
+                                    <tr id="footerRow">
+                                        <!-- Footer will mirror headers -->
                                     </tr>
                                 </tfoot>
                                 <tbody id="purchaseTableBody">
@@ -233,28 +225,59 @@
         });
     }
 
+    // Format cell value based on column type
+    function formatCellValue(value, field, type) {
+        if (!value) return 'N/A';
+        
+        if (field.includes('price') || field.includes('cost')) {
+            return formatCurrency(value);
+        }
+        if (field.includes('date')) {
+            return formatDate(value);
+        }
+        if (type && type.includes('int')) {
+            return value.toLocaleString();
+        }
+        return value;
+    }
+
     // Load purchase data
     async function loadPurchaseData() {
         try {
             const response = await fetch('/api/purchases');
             if (response.ok) {
-                const { data } = await response.json();
-                const tableBody = document.getElementById('purchaseTableBody');
+                const { data, columns } = await response.json();
                 
-                // Clear existing data
+                // Set up headers
+                const headerRow = document.getElementById('headerRow');
+                const footerRow = document.getElementById('footerRow');
+                const headerHTML = columns.map(col => {
+                    const displayName = col.field.split('_')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
+                    return `<th>${displayName}</th>`;
+                }).join('');
+                
+                headerRow.innerHTML = headerHTML + '<th>Total Cost</th>';
+                footerRow.innerHTML = headerHTML + '<th>Total Cost</th>';
+
+                // Set up body
+                const tableBody = document.getElementById('purchaseTableBody');
                 tableBody.innerHTML = '';
                 
-                // Add new data
-                data.forEach(purchase => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${purchase.item_name}</td>
-                        <td>${purchase.item_quantity}</td>
-                        <td>${formatCurrency(purchase.item_price)}</td>
-                        <td>${formatCurrency(purchase.total_cost)}</td>
-                        <td>${formatDate(purchase.date_purchased)}</td>
-                    `;
-                    tableBody.appendChild(row);
+                // Add data rows
+                data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    columns.forEach(col => {
+                        const td = document.createElement('td');
+                        td.innerHTML = formatCellValue(row[col.field], col.field, col.type);
+                        tr.appendChild(td);
+                    });
+                    // Add total cost column
+                    const totalCostTd = document.createElement('td');
+                    totalCostTd.innerHTML = formatCurrency(row.total_cost);
+                    tr.appendChild(totalCostTd);
+                    tableBody.appendChild(tr);
                 });
 
                 // Initialize DataTable
