@@ -66,5 +66,30 @@ router.get("/api/purchases", async (req: Request, res: Response) => {
     }
 });
 
+// Add Purchase Item
+router.post("/api/add-purchase", async (req: Request, res: Response) => {
+    try {
+        const { itemName, itemQuantity, itemPrice, itemDate } = req.body;
+        let totalCost = itemQuantity * itemPrice;
+
+        const addPurchaseQuery = `INSERT INTO item_inventory (item_name, item_quantity, item_price, total_cost, date_purchased) VALUES (?, ?, ?, ?)`;
+
+        const [result] = await pool.query(addPurchaseQuery, [itemName, itemQuantity, itemPrice, totalCost,itemDate]) as [any[], any[]];
+
+        res.json({
+            success: true,
+            message: "Purchase added successfully"
+        });
+
+    } catch (error) {
+        console.error("Error adding purchase: ", error);
+        res.status(500).json({
+            success: false,
+            message: "Error adding purchase"
+        });
+    }
+
+});
+
 export default router;
 
